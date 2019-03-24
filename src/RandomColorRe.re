@@ -16,7 +16,7 @@ type randomColorOptions = {
   [@bs.optional]
   alpha: option(float),
   [@bs.optional]
-  hue: string,
+  hue: option(string),
   [@bs.optional]
   format: string,
   [@bs.optional]
@@ -25,24 +25,13 @@ type randomColorOptions = {
 
 [@bs.module] external randomColorExternal: randomColorOptions => string = "randomcolor";
 
-let randomColor = (~luminosity=?, ~format=?, ~hue=?, ~hueCustom=?, ~seed=?, ~count=?, ~alpha=?, ()) => {
-  let luminosityVal =
-    switch (hueCustom, luminosity) {
-    | (Some(value), _) => value
-    | (None, Some(value)) => luminosityToJs(value)
-    | (None, None) => "bright"
-    };
-
-  let formatVal =
-    switch (format) {
-    | Some(value) => formatToJs(value)
-    | None => "hex"
-    };
-
+let randomColor =
+    (~luminosity=`bright, ~format=`hex, ~hue=?, ~hueHex=?, ~seed=?, ~count=?, ~alpha=?, ()) => {
   let hueVal =
-    switch (hue) {
-    | Some(value) => hueToJs(value)
-    | None => "hex"
+    switch (hueHex, hue) {
+    | (Some(value), _) => Some(value)
+    | (None, Some(value)) => Some(hueToJs(value))
+    | (None, None) => None
     };
 
   let isAlphaValid = (alpha: option(float)) => {
@@ -57,7 +46,15 @@ let randomColor = (~luminosity=?, ~format=?, ~hue=?, ~hueCustom=?, ~seed=?, ~cou
   };
 
   let colorOpts =
-    randomColorOptions(~seed, ~count, ~alpha, ~luminosity=luminosityVal, ~format=formatVal, ~hue=hueVal, ());
+    randomColorOptions(
+      ~seed,
+      ~count,
+      ~alpha,
+      ~luminosity=luminosityToJs(luminosity),
+      ~format=formatToJs(format),
+      ~hue=hueVal,
+      (),
+    );
 
   randomColorExternal(colorOpts);
 };
