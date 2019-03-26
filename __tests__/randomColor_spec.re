@@ -203,3 +203,31 @@ let () =
       }
     ),
   );
+
+let () =
+  describe(
+    "randomColor alpha",
+    ExpectJs.(
+      () => {
+        test("should generate rgba color with alpha #1", () =>
+          expect(randomColor(~seed="test", ~format=FormatRgba, ~alpha=0.2, ()))
+          |> toBe("rgba(249, 160, 92, 0.2)")
+        );
+        test("should generate rgba color with alpha #2", () =>
+          expect(randomColor(~seed="test", ~format=FormatRgba, ~alpha=1.0, ()))
+          |> toBe("rgba(249, 160, 92, 1)")
+        );
+        test("should generate hsla color with alpha #1", () =>
+          expect(randomColor(~seed="test", ~format=FormatHsla, ~alpha=0.2, ()))
+          |> toBe("hsla(26, 93.92%, 67.13%, 0.2)")
+        );
+        test("should generate hsla color with alpha #2", () =>
+          expect(randomColor(~seed="test", ~format=FormatHsla, ~alpha=1.0, ()))
+          |> toBe("hsla(26, 93.92%, 67.13%, 1)")
+        );
+      }
+    ),
+  );
+
+/* @todo: "count" option */
+/* @todo: function returning array */
