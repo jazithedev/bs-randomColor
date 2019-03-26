@@ -1,60 +1,92 @@
-[@bs.deriving jsConverter]
-type luminosity = [ | `bright | `light | `dark];
+type hue =
+  | HueRed
+  | HueOrange
+  | HueYellow
+  | HueGreen
+  | HueBlue
+  | HuePurple
+  | HuePink
+  | HueMonochrome;
 
-[@bs.deriving jsConverter]
-type format = [ | `rgb | `rgba | `rgbArray | `hsl | `hsla | `hslArray | `hex];
+let hueToString =
+  fun
+  | HueRed => "red"
+  | HueOrange => "orange"
+  | HueYellow => "yellow"
+  | HueGreen => "green"
+  | HueBlue => "blue"
+  | HuePurple => "purple"
+  | HuePink => "pink"
+  | HueMonochrome => "monochrome";
 
-[@bs.deriving jsConverter]
-type hue = [ | `red | `orange | `yellow | `green | `blue | `purple | `pink | `monochrome];
+type format =
+  | FormatRgb
+  | FormatRgba
+  | FormatRgbArray
+  | FormatHsl
+  | FormatHsla
+  | FormatHslArray
+  | FormatHex;
 
-[@bs.deriving abstract]
-type randomColorOptions = {
-  [@bs.optional]
-  seed: option(string),
-  [@bs.optional]
-  count: option(int),
-  [@bs.optional]
-  alpha: option(float),
-  [@bs.optional]
-  hue: option(string),
-  [@bs.optional]
-  format: string,
-  [@bs.optional]
-  luminosity: string,
-};
+let formatToString =
+  fun
+  | FormatRgb => "rgb"
+  | FormatRgba => "rgba"
+  | FormatRgbArray => "rgbArray"
+  | FormatHsl => "hsl"
+  | FormatHsla => "hsla"
+  | FormatHslArray => "hslArray"
+  | FormatHex => "hex";
 
-[@bs.module] external randomColorExternal: randomColorOptions => string = "randomcolor";
+type luminosity =
+  | LuminosityBright
+  | LuminosityLight
+  | LuminosityDark;
+
+let luminosityToString =
+  fun
+  | LuminosityBright => "bright"
+  | LuminosityLight => "light"
+  | LuminosityDark => "dark";
+
+type config;
+
+[@bs.obj]
+external config:
+  (
+    ~seed: string=?,
+    ~hueHex: string=?,
+    ~count: int=?,
+    ~alpha: float=?,
+    ~hue: string=?,
+    ~format: string=?,
+    ~luminosity: string=?,
+    unit
+  ) =>
+  config =
+  "";
+
+[@bs.module] external randomColor: config => string = "randomcolor";
 
 let randomColor =
-    (~luminosity=`bright, ~format=`hex, ~hue=?, ~hueHex=?, ~seed=?, ~count=?, ~alpha=?, ()) => {
-  let hueVal =
-    switch (hueHex, hue) {
-    | (Some(value), _) => Some(value)
-    | (None, Some(value)) => Some(hueToJs(value))
-    | (None, None) => None
-    };
-
-  let isAlphaValid = (alpha: option(float)) => {
-    switch (alpha) {
-    | None => true
-    | Some(value) => value >= 0.0 && value <= 1.0
-    };
-  };
-
-  if (isAlphaValid(alpha) === false) {
-    Js.Console.error("Alpha value is not valid (should be float between 0 and 1).");
-  };
-
-  let colorOpts =
-    randomColorOptions(
-      ~seed,
-      ~count,
-      ~alpha,
-      ~luminosity=luminosityToJs(luminosity),
-      ~format=formatToJs(format),
-      ~hue=hueVal,
+    (
+      ~luminosity=LuminosityBright,
+      ~format=FormatHex,
+      ~hue=?,
+      ~hueHex=?,
+      ~seed=?,
+      ~count=?,
+      ~alpha=?,
       (),
-    );
-
-  randomColorExternal(colorOpts);
-};
+    ) =>
+  ()
+  |> config(
+       ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
+       ~format=?Belt.Option.map(Some(format), formatToString),
+       ~hue=?Belt.Option.map(hue, hueToString),
+       ~hueHex?,
+       ~seed?,
+       ~count?,
+       ~alpha?,
+     )
+  |> randomColor;
