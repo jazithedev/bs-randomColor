@@ -83,20 +83,29 @@ let () =
         test("should return rgba", () =>
           expect(formatToString(FormatRgba)) |> toBe("rgba")
         );
-        test("should return rgbArray", () =>
-          expect(formatToString(FormatRgbArray)) |> toBe("rgbArray")
-        );
         test("should return hsl", () =>
           expect(formatToString(FormatHsl)) |> toBe("hsl")
         );
         test("should return hsla", () =>
           expect(formatToString(FormatHsla)) |> toBe("hsla")
         );
-        test("should return hslArray", () =>
-          expect(formatToString(FormatHslArray)) |> toBe("hslArray")
-        );
         test("should return hex", () =>
           expect(formatToString(FormatHex)) |> toBe("hex")
+        );
+      }
+    ),
+  );
+
+let () =
+  describe(
+    "randomColor format array type as string",
+    ExpectJs.(
+      () => {
+        test("should return rgbArray", () =>
+          expect(formatArrayToString(FormatRgbArray)) |> toBe("rgbArray")
+        );
+        test("should return hslArray", () =>
+          expect(formatArrayToString(FormatHslArray)) |> toBe("hslArray")
         );
       }
     ),
@@ -229,5 +238,25 @@ let () =
     ),
   );
 
-/* @todo: "count" option */
-/* @todo: function returning array */
+let () =
+  describe(
+    "randomColor multiple colors",
+    ExpectJs.(
+      () => {
+        test("should generate 2 colors", () =>
+          expect(randomColorMultiple(~count=2, ())) |> toHaveLength(2)
+        );
+        test("should generate 6 colors", () =>
+          expect(randomColorMultiple(~count=6, ())) |> toHaveLength(6)
+        );
+        test("should generate 3 fixed colors", () => {
+          let value = randomColorMultiple(~seed="test123", ~count=6, ());
+
+          expect(value)
+          |> toEqual([|"#e7f453", "#4cdbba", "#f959c4", "#dd6952", "#c250d3", "#8750d3"|]);
+        });
+      }
+    ),
+  );
+
+/* @todo: Support for FormatRgbArray, FormatHslArray */

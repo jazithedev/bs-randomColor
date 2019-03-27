@@ -22,21 +22,26 @@ let hueToString =
 type format =
   | FormatRgb
   | FormatRgba
-  | FormatRgbArray
   | FormatHsl
   | FormatHsla
-  | FormatHslArray
   | FormatHex;
 
 let formatToString =
   fun
   | FormatRgb => "rgb"
   | FormatRgba => "rgba"
-  | FormatRgbArray => "rgbArray"
   | FormatHsl => "hsl"
   | FormatHsla => "hsla"
-  | FormatHslArray => "hslArray"
   | FormatHex => "hex";
+
+type formatArray =
+  | FormatRgbArray
+  | FormatHslArray;
+
+let formatArrayToString =
+  fun
+  | FormatRgbArray => "rgbArray"
+  | FormatHslArray => "hslArray";
 
 type luminosity =
   | LuminosityBright
@@ -56,7 +61,6 @@ external config:
   (
     ~seed: string=?,
     ~hueHex: string=?,
-    ~count: int=?,
     ~alpha: float=?,
     ~hue: string=?,
     ~format: string=?,
@@ -69,6 +73,42 @@ external config:
 [@bs.module] external randomColor: config => string = "randomcolor";
 
 let randomColor =
+    (~luminosity=LuminosityBright, ~format=FormatHex, ~hue=?, ~hueHex=?, ~seed=?, ~alpha=?, ()) =>
+  ()
+  |> config(
+       ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
+       ~format=?Belt.Option.map(Some(format), formatToString),
+       ~hue=?Belt.Option.map(hue, hueToString),
+       ~hueHex?,
+       ~seed?,
+       ~alpha?,
+     )
+  |> randomColor;
+
+/**
+ * Version of randomColor which will return multiple color values.
+ */
+
+type configForMultiple;
+
+[@bs.obj]
+external configForMultiple:
+  (
+    ~seed: string=?,
+    ~hueHex: string=?,
+    ~count: int=?,
+    ~alpha: float=?,
+    ~hue: string=?,
+    ~format: string=?,
+    ~luminosity: string=?,
+    unit
+  ) =>
+  configForMultiple =
+  "";
+
+[@bs.module] external randomColorMultiple: configForMultiple => array(string) = "randomcolor";
+
+let randomColorMultiple =
     (
       ~luminosity=LuminosityBright,
       ~format=FormatHex,
@@ -80,7 +120,7 @@ let randomColor =
       (),
     ) =>
   ()
-  |> config(
+  |> configForMultiple(
        ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
        ~format=?Belt.Option.map(Some(format), formatToString),
        ~hue=?Belt.Option.map(hue, hueToString),
@@ -89,4 +129,4 @@ let randomColor =
        ~count?,
        ~alpha?,
      )
-  |> randomColor;
+  |> randomColorMultiple;
