@@ -277,9 +277,9 @@ let () =
     ExpectJs.(
       () => {
         test("should generate rgb format as an array #1", () => {
-          let (r, g, b) = randomColorRgbArray(~seed="test", ());
+          let (r, g, b) = randomColorRgbArray(~seed="word", ());
 
-          expect((r, g, b)) |> toEqual((75, 117, 3));
+          expect((r, g, b)) |> toEqual((193, 81, 21));
         });
 
         test("should generate rgb format as an array #2", () => {
@@ -303,21 +303,21 @@ let () =
     ExpectJs.(
       () => {
         test("should generate hsl format as an array #1", () => {
-          let (r, g, b) = randomColorHslArray(~seed="test", ());
+          let (h, s, l) = randomColorHslArray(~seed="test1", ());
 
-          expect((r, g, b)) |> toEqual((82, 94.17, 23.69));
+          expect((h, s, l)) |> toEqual((55, 92.31, 46.800000000000004));
         });
 
         test("should generate hsl format as an array #2", () => {
-          let (r, g, b) = randomColorHslArray(~seed="test2", ());
+          let (h, s, l) = randomColorHslArray(~seed="test2", ());
 
-          expect((r, g, b)) |> toEqual((76, 81.48, 51.415));
+          expect((h, s, l)) |> toEqual((76, 81.48, 51.415));
         });
 
         test("should generate rgb array with hue", () => {
-          let (r, g, b) = randomColorHslArray(~seed="test", ~hue=HueGreen, ());
+          let (h, s, l) = randomColorHslArray(~seed="test", ~hue=HueGreen, ());
 
-          expect((r, g, b)) |> toEqual((81, 94.17, 23.69));
+          expect((h, s, l)) |> toEqual((81, 94.17, 23.69));
         });
       }
     ),
