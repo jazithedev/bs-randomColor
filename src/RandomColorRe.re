@@ -130,3 +130,72 @@ let randomColorMultiple =
        ~alpha?,
      )
   |> randomColorMultiple;
+
+/**
+ * Version of randomColor which will return RGB format as an array.
+ */
+
+type configForRgbArray;
+
+[@bs.obj]
+external configForRgbArray:
+  (
+    ~luminosity: string=?,
+    ~format: string=?,
+    ~seed: string=?,
+    ~hue: string=?,
+    ~hueHex: string=?,
+    ~alpha: float=?,
+    unit
+  ) =>
+  configForRgbArray =
+  "";
+
+[@bs.module] external randomColorRgbArray: configForRgbArray => (int, int, int) = "randomcolor";
+
+let randomColorRgbArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ~alpha=?, ()) =>
+  ()
+  |> configForRgbArray(
+       ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
+       ~format=formatArrayToString(FormatRgbArray),
+       ~hue=?Belt.Option.map(hue, hueToString),
+       ~hueHex?,
+       ~seed?,
+       ~alpha?,
+     )
+  |> randomColorRgbArray;
+
+/**
+ * Version of randomColor which will return HSL format as an array.
+ */
+
+type configForHslArray;
+
+[@bs.obj]
+external configForHslArray:
+  (
+    ~luminosity: string=?,
+    ~format: string=?,
+    ~seed: string=?,
+    ~hue: string=?,
+    ~hueHex: string=?,
+    ~alpha: float=?,
+    unit
+  ) =>
+  configForHslArray =
+  "";
+
+[@bs.module]
+external randomColorHslArray: configForHslArray => (int, float, float) = "randomcolor";
+
+let randomColorHslArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ~alpha=?, ()) =>
+  ()
+  |> configForHslArray(
+       ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
+       ~format=formatArrayToString(FormatHslArray),
+       ~hue=?Belt.Option.map(hue, hueToString),
+       ~hueHex?,
+       ~seed?,
+       ~alpha?,
+     )
+  |> randomColorHslArray;
