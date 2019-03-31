@@ -145,7 +145,6 @@ external configForRgbArray:
     ~seed: string=?,
     ~hue: string=?,
     ~hueHex: string=?,
-    ~alpha: float=?,
     unit
   ) =>
   configForRgbArray =
@@ -153,7 +152,7 @@ external configForRgbArray:
 
 [@bs.module] external randomColorRgbArray: configForRgbArray => (int, int, int) = "randomcolor";
 
-let randomColorRgbArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ~alpha=?, ()) =>
+let randomColorRgbArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ()) =>
   ()
   |> configForRgbArray(
        ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
@@ -161,7 +160,6 @@ let randomColorRgbArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHe
        ~hue=?Belt.Option.map(hue, hueToString),
        ~hueHex?,
        ~seed?,
-       ~alpha?,
      )
   |> randomColorRgbArray;
 
@@ -179,7 +177,6 @@ external configForHslArray:
     ~seed: string=?,
     ~hue: string=?,
     ~hueHex: string=?,
-    ~alpha: float=?,
     unit
   ) =>
   configForHslArray =
@@ -188,7 +185,7 @@ external configForHslArray:
 [@bs.module]
 external randomColorHslArray: configForHslArray => (int, float, float) = "randomcolor";
 
-let randomColorHslArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ~alpha=?, ()) =>
+let randomColorHslArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHex=?, ()) =>
   ()
   |> configForHslArray(
        ~luminosity=?Belt.Option.map(Some(luminosity), luminosityToString),
@@ -196,6 +193,5 @@ let randomColorHslArray = (~luminosity=LuminosityBright, ~seed=?, ~hue=?, ~hueHe
        ~hue=?Belt.Option.map(hue, hueToString),
        ~hueHex?,
        ~seed?,
-       ~alpha?,
      )
   |> randomColorHslArray;
