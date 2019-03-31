@@ -12,6 +12,20 @@ Generate single color with tuple as an output (`(int, int, int)`).
 - `randomColorRgbArray()`<br />
 Generate single color with tuple as an output (`(int, float, float)`).
 
+## How to install
+
+```
+yarn add bs-randomcolor
+```
+
+Then add `bs-randomcolor` as a dependency to `bsconfig.json`:
+
+```diff
+"bs-dependencies": [
++  "bs-randomcolor"
+]
+```
+
 ## Supported options
 
 - **hue**<br />
